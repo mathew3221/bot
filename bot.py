@@ -1,6 +1,5 @@
 import os
 import random
-import time
 from moviepy.editor import VideoFileClip
 from pyrogram import Client, filters
 from dotenv import load_dotenv
@@ -16,12 +15,12 @@ bot = Client("screenshot_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_T
 
 def extract_screenshots(video_path, output_folder, num_screenshots=5):
     clip = VideoFileClip(video_path)
-    duration = clip.duration
-    timestamps = sorted(random.sample(range(int(duration)), num_screenshots))
-    
+    duration = int(clip.duration)
+    timestamps = sorted(random.sample(range(duration), min(num_screenshots, duration)))
+
     os.makedirs(output_folder, exist_ok=True)
     screenshots = []
-    
+
     for i, t in enumerate(timestamps):
         frame_path = os.path.join(output_folder, f"screenshot_{i+1}.jpg")
         clip.save_frame(frame_path, t)
